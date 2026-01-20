@@ -1,63 +1,160 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
+import { SpinningWheel, type Prize } from "@/components/spinning-wheel";
+import { ResultModal } from "@/components/result-modal";
+import { useLanguage } from "@/lib/language-context";
 
 export default function Home() {
+  const { t } = useLanguage();
+  const [email, setEmail] = useState("");
+  const [hasSpun, setHasSpun] = useState(false);
+  const [wonPrize, setWonPrize] = useState<Prize | null>(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+
+  const prizes: Prize[] = [
+    {
+      id: "discount-10",
+      label: t.prizes.discount10,
+      color: "#EF4444", // Red
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "free-shipping",
+      label: t.prizes.freeShipping,
+      color: "#F59E0B", // Amber
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "discount-20",
+      label: t.prizes.discount20,
+      color: "#10B981", // Emerald
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "gift-50",
+      label: t.prizes.giftCard50,
+      color: "#3B82F6", // Blue
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "discount-30",
+      label: t.prizes.discount30,
+      color: "#8B5CF6", // Violet
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "mystery",
+      label: t.prizes.mystery,
+      color: "#EC4899", // Pink
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "no-luck",
+      label: t.prizes.noLuck,
+      color: "#6B7280", // Gray
+      textColor: "#FFFFFF",
+    },
+    {
+      id: "gift-100",
+      label: t.prizes.giftCard100,
+      color: "#14B8A6", // Teal
+      textColor: "#FFFFFF",
+    },
+  ];
+
+  const handleSpinComplete = (prize: Prize) => {
+    setWonPrize(prize);
+    setHasSpun(true);
+    setShowResultModal(true);
+  };
+
+  const handleModalClose = (open: boolean) => {
+    setShowResultModal(open);
+    if (!open) {
+      // Reset for another spin
+      setHasSpun(false);
+      setWonPrize(null);
+    }
+  };
+
+  // Simple email validation
+  const isEmailValid =
+    email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="min-h-screen bg-background">
+      <header className="fixed top-0 right-0 p-4 flex gap-2 z-20">
+        <LanguageToggle />
+        <ThemeToggle />
+      </header>
+
+      <main className="flex min-h-screen items-center justify-center p-8 pt-20">
+        <div className="max-w-4xl w-full space-y-12">
+          {/* Hero Section */}
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl md:text-5xl font-bold">{t.hero.title}</h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              {t.hero.subtitle}
+            </p>
+          </div>
+
+          {/* Email Input */}
+          {!hasSpun && (
+            <div className="max-w-md mx-auto space-y-2">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={(e) => setEmail(e.target.value.trim())}
+                placeholder={t.hero.emailPlaceholder}
+                className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                autoFocus
+                autoComplete="email"
+                aria-label="Email address"
+                aria-invalid={email.length > 0 && !isEmailValid}
+                aria-describedby={
+                  email && !isEmailValid ? "email-error" : undefined
+                }
+              />
+              {email && !isEmailValid && (
+                <p
+                  id="email-error"
+                  className="text-sm text-destructive"
+                  role="alert"
+                >
+                  {t.wheel.invalidEmail}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Spinning Wheel */}
+          <div className="flex justify-center">
+            <SpinningWheel
+              prizes={prizes}
+              onSpinComplete={handleSpinComplete}
+              disabled={!isEmailValid}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          {/* Result Modal */}
+          <ResultModal
+            open={showResultModal}
+            onOpenChange={handleModalClose}
+            prize={wonPrize}
+            email={email}
+          />
+
+          {/* Terms */}
+          <p className="text-sm text-muted-foreground text-center">
+            {t.hero.termsText}{" "}
+            <a href="#" className="underline hover:text-foreground">
+              {t.hero.termsLink}
+            </a>
+          </p>
         </div>
       </main>
     </div>
