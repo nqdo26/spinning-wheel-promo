@@ -1,67 +1,81 @@
-# Spinning Wheel Promo
+# 🎡 Spinning Wheel Promo
 
-A gamified promotional component for e-commerce websites that engages users through an interactive spinning wheel experience. Users spin the wheel to win discounts, offers, or prizes — a proven conversion optimization technique used by modern e-commerce platforms.
+An interactive promotional spinning wheel application for e-commerce platforms. Built with Next.js 15, TypeScript, and Tailwind CSS, featuring smooth SVG animations, bilingual support, and dark/light mode themes.
 
-## Feature Overview
+## ✨ Features
 
-**Core User Flow:**
+### Core Functionality
 
-1. User visits the page and sees a promotional call-to-action
-2. User enters their email address to participate
-3. User clicks "Spin the Wheel" to trigger the animation
-4. Wheel spins and lands on a random prize segment
-5. User receives their reward (discount code, free shipping, etc.)
-6. Result is displayed with appropriate visual feedback
+- **Interactive Spinning Wheel** - Custom SVG-based wheel with 8 prize segments
+- **Smooth Animation** - Physics-based rotation with cubic-bezier easing (4s duration)
+- **Random Prize Selection** - Fair prize distribution with variance for natural feel
+- **Result Modal** - Display winning prize with auto-generated promo code
 
-**Key Features:**
+### UI/UX Features
 
-- Smooth, realistic spinning animation with physics-based deceleration
-- Randomized prize selection with configurable probabilities
-- Responsive design (mobile, tablet, desktop)
-- Email validation and form handling
-- Confetti animation on winning result
-- Accessible UI with keyboard navigation support
+- **🌓 Dark/Light Mode** - Theme toggle with next-themes, persisted across sessions
+- **🌍 Bilingual Support** - Full English and Vietnamese translations via custom i18n context
+- **📱 Responsive Design** - Optimized for mobile, tablet, and desktop
+- **♿ Accessible** - ARIA labels, keyboard navigation, semantic HTML
+- **🎨 Modern UI** - Clean interface with Tailwind CSS and shadcn/ui components
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- **Framework:** Next.js 15 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **UI Components:** shadcn/ui (Radix UI primitives)
-- **Animations:** CSS transforms + JavaScript
-- **Deployment:** Vercel
+| Category             | Technology                      |
+| -------------------- | ------------------------------- |
+| **Framework**        | Next.js 15 (App Router)         |
+| **Language**         | TypeScript                      |
+| **Styling**          | Tailwind CSS v4                 |
+| **UI Components**    | shadcn/ui (Radix UI primitives) |
+| **Theme Management** | next-themes                     |
+| **Icons**            | lucide-react                    |
+| **Runtime**          | React 19                        |
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 spinning-wheel-promo/
 ├── app/
-│   ├── layout.tsx          # Root layout
-│   ├── page.tsx            # Main landing page
-│   └── globals.css         # Global styles
+│   ├── layout.tsx              # Root layout with theme provider
+│   ├── page.tsx                # Main page with wheel logic
+│   └── globals.css             # Global styles + Tailwind directives
 ├── components/
-│   ├── ui/                 # shadcn/ui components
-│   └── SpinningWheel.tsx   # Core wheel component
+│   ├── spinning-wheel.tsx      # Core wheel component (SVG-based)
+│   ├── result-modal.tsx        # Prize result modal
+│   ├── language-toggle.tsx     # EN/VI language switcher
+│   ├── theme-toggle.tsx        # Light/Dark mode toggle
+│   └── ui/                     # shadcn/ui components (Button, Dialog)
 ├── lib/
-│   └── utils.ts            # Utility functions
-├── public/                 # Static assets
-└── README.md
+│   ├── language-context.tsx    # Custom i18n context provider
+│   ├── locales/
+│   │   ├── en.ts              # English translations
+│   │   └── vi.ts              # Vietnamese translations
+│   └── utils.ts               # Utility functions (cn)
+└── public/
 ```
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18.17 or later
-- npm, yarn, pnpm, or bun
+- **Node.js** 18.17 or later
+- **npm**, yarn, pnpm, or bun
 
 ### Installation
 
 ```bash
+# Clone repository
+git clone <repository-url>
+cd spinning-wheel-promo
+
 # Install dependencies
 npm install
+```
 
-# Run development server
+### Development
+
+```bash
+# Start development server
 npm run dev
 ```
 
@@ -70,85 +84,168 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 ### Build for Production
 
 ```bash
+# Create production build
 npm run build
+
+# Start production server
 npm start
 ```
 
-## Implementation Notes
-
-### Animation Strategy
-
-- The wheel uses CSS `transform: rotate()` for hardware-accelerated performance
-- Spinning physics: eased deceleration using cubic-bezier timing functions
-- Final angle is calculated to land on the selected prize segment
-- Minimum rotation of 4-5 full spins ensures engaging UX
-
-### Prize Logic
-
-- Prizes are defined with configurable probabilities (weights)
-- Weighted random selection algorithm ensures fair distribution
-- Prize segments are evenly distributed around 360° circle
-- Colors and labels are easily customizable via props
-
-### UX Considerations
-
-- Disabled state during spin prevents double-submission
-- Visual feedback at every interaction point (hover, active, disabled states)
-- Email validation with error messages
-- Mobile-optimized touch interactions
-- Loading states and smooth transitions
-
-### Accessibility
-
-- Semantic HTML structure
-- ARIA labels for screen readers
-- Keyboard-navigable form inputs
-- Color contrast meets WCAG AA standards
-
-## Scope & Limitations
-
-**Frontend-Only Implementation:**
-
-- This is a client-side demonstration with no backend API
-- Email submissions are **simulated** (not persisted)
-- Prize selection is **random client-side** (no server validation)
-- No authentication, database, or email service integration
-
-**Production Considerations:**
-In a production environment, this would include:
-
-- Backend API endpoint to record email submissions
-- Server-side prize selection to prevent client manipulation
-- Email service integration (SendGrid, Mailchimp, etc.)
-- Rate limiting and abuse prevention
-- Analytics tracking (conversion rates, prize distribution)
-- A/B testing framework
-
-## Deployment
-
-This project is optimized for deployment on [Vercel](https://vercel.com):
+### Linting
 
 ```bash
-# Deploy to Vercel
+npm run lint
+```
+
+## 🎮 How to Use
+
+1. **Initial View** - Click "Spin Now" / "Quay Ngay" button
+2. **Wheel Appears** - Interactive spinning wheel is displayed
+3. **Spin** - Click center "SPIN" button to start animation
+4. **Result** - After 4 seconds, modal shows your prize with promo code
+5. **Repeat** - Click "Try Again" to spin again or "Back to Home" to return
+
+## 🎯 Prize Segments
+
+| Index | Prize                 | Color   | Translation Key     |
+| ----- | --------------------- | ------- | ------------------- |
+| 0     | 10% Off               | Red     | prizes.discount10   |
+| 1     | Free Shipping         | Amber   | prizes.freeShipping |
+| 2     | 20% Off               | Emerald | prizes.discount20   |
+| 3     | $50 Gift Card         | Blue    | prizes.giftCard50   |
+| 4     | 30% Off               | Violet  | prizes.discount30   |
+| 5     | Mystery Prize         | Pink    | prizes.mystery      |
+| 6     | Better Luck Next Time | Gray    | prizes.noLuck       |
+| 7     | $100 Gift Card        | Teal    | prizes.giftCard100  |
+
+## 🌐 Internationalization (i18n)
+
+### Supported Languages
+
+- 🇺🇸 **English** (en)
+- 🇻🇳 **Tiếng Việt** (vi)
+
+### Language Toggle
+
+- Located in top-right corner
+- Shows "EN" or "VI" text
+- Persisted in localStorage
+- Instant language switching without page reload
+
+### Adding New Languages
+
+1. Create new file in `lib/locales/<lang>.ts`
+2. Follow `TranslationKeys` interface from `en.ts`
+3. Import and add to `LanguageProvider` in `language-context.tsx`
+
+## 🎨 Theme System
+
+### Dark/Light Mode
+
+- **Toggle Button** - Sun/Moon icon in top-right
+- **System Preference** - Respects OS dark mode setting
+- **Persistence** - Theme saved in localStorage
+- **Smooth Transitions** - CSS transitions for theme changes
+
+### Theme Implementation
+
+- Powered by `next-themes` library
+- Tailwind CSS dark mode with `class` strategy
+- Theme provider wraps entire app in root layout
+
+## 🔧 Implementation Details
+
+### Spinning Wheel Animation
+
+**Rotation Formula:**
+
+```typescript
+const segmentMidAngle = randomIndex * segmentAngle + segmentAngle / 2;
+const angleToRotate = -segmentMidAngle;
+const variance = (Math.random() - 0.5) * (segmentAngle * 0.3);
+const newRotation = extraRotation + angleToRotate + variance;
+```
+
+**Key Points:**
+
+- Arrow fixed at top (0° position, between segment 7 and 0)
+- Wheel rotates to align selected segment center with arrow
+- Minimum 5 full rotations (1800°) + target angle
+- Small variance (±13.5°) for natural feel
+- Rotation resets to 0° after each spin for consistency
+
+### SVG Architecture
+
+**Coordinate System:**
+
+- `polarToCartesian()` - Converts angles to (x, y) coordinates
+- `describeArc()` - Generates SVG path for pie-slice segments
+- Segments drawn from 0° (right/3 o'clock) clockwise
+- Text positioned at 62% radius with rotation transform
+
+**Multi-line Text:**
+
+- Automatic word splitting for long prize names
+- 1 word = 1 line, 2 words = 2 lines, 3+ words = balanced split
+- SVG `<tspan>` elements with calculated dy offsets
+
+## 🎓 Assignment Compliance
+
+This project fulfills technical interview requirements:
+
+✅ **SVG-Based Wheel** - Custom SVG rendering (not canvas or images)  
+✅ **Smooth Animation** - CSS transforms with easing functions  
+✅ **Random Selection** - Fair prize distribution algorithm  
+✅ **Result Display** - Modal with prize and promo code  
+✅ **Clean Code** - TypeScript, component separation, no comments  
+✅ **Responsive** - Mobile-first design with Tailwind  
+✅ **User Flow** - Button → Wheel → Spin → Modal (no email input)
+
+**Bonus Features:**
+
+- 🌓 Dark/Light mode toggle
+- 🌍 Bilingual EN/VI support
+- ♻️ Reset mechanism for multiple spins
+- 🎯 Fixed arrow with rotating wheel segments only
+
+## 📝 Notes
+
+### Frontend-Only Implementation
+
+- **No Backend** - All logic runs client-side
+- **Simulated Prizes** - Random selection on frontend
+- **No Persistence** - Promo codes not saved to database
+- **No Email Service** - No email collection or notifications
+
+### Production Considerations
+
+For real-world deployment, consider adding:
+
+- Backend API for prize selection validation
+- Database to store user entries and prevent duplicates
+- Email service integration (SendGrid, Mailchip)
+- Rate limiting and abuse prevention
+- Analytics tracking (Google Analytics, Mixpanel)
+- A/B testing for conversion optimization
+
+## 🚀 Deployment
+
+### Deploy to Vercel
+
+```bash
+# One-time deployment
 npx vercel
 
-# Deploy to production
+# Production deployment
 npx vercel --prod
 ```
 
-Alternatively, connect your GitHub repository to Vercel for automatic deployments on push.
+Or connect your GitHub repository to Vercel for automatic deployments on every push.
 
-## Note for Reviewers
+### Environment Variables
 
-This assignment demonstrates:
+No environment variables required for this demo version.
 
-- ✅ Clean component architecture with separation of concerns
-- ✅ TypeScript for type safety
-- ✅ Modern React patterns (hooks, composition)
-- ✅ Responsive design with Tailwind CSS
-- ✅ Smooth animations and attention to UX details
-- ✅ Professional code structure suitable for team collaboration
+## 📄 License
 
-**Time Investment:** ~4-6 hours (component logic, animations, styling, testing)
-
-Thank you for reviewing this submission. I'm happy to discuss architectural decisions, implementation details, or potential enhancements.
+This project is created for technical interview/assessment purposes.
