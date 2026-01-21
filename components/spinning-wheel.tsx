@@ -16,7 +16,6 @@ type SpinningWheelProps = {
   disabled?: boolean;
 };
 
-// Helper to convert polar coordinates to cartesian
 function polarToCartesian(
   centerX: number,
   centerY: number,
@@ -30,7 +29,6 @@ function polarToCartesian(
   };
 }
 
-// Helper to create SVG arc path for wheel segment
 function describeArc(
   x: number,
   y: number,
@@ -86,34 +84,40 @@ export function SpinningWheel({
 
     const minSpins = 5;
     const extraRotation = 360 * minSpins;
-    const targetSegmentRotation = randomIndex * segmentAngle;
-    const offset = segmentAngle / 2;
+
+    const segmentMidAngle = randomIndex * segmentAngle + segmentAngle / 2;
+    const angleToRotate = -segmentMidAngle;
     const variance = (Math.random() - 0.5) * (segmentAngle * 0.3);
 
-    const newRotation =
-      rotation + extraRotation + targetSegmentRotation + offset + variance;
+    const newRotation = extraRotation + angleToRotate + variance;
 
     setRotation(newRotation);
 
     setTimeout(() => {
       setIsSpinning(false);
       onSpinComplete?.(selectedPrize);
+      setTimeout(() => {
+        setRotation(0);
+      }, 100);
     }, 4000);
   };
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
-      {/* Wheel Container */}
-      <div className="relative w-full max-w-136 aspect-square flex items-center justify-center">
-        {/* Fixed Pointer at Top */}
-        <div className="absolute -top-8 left-1/2 -translate-x-1/2 z-20">
-          <div className="relative">
-            <div className="w-0 h-0 border-l-18 border-r-18 border-t-36 border-l-transparent border-r-transparent border-t-yellow-500 drop-shadow-2xl" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-0 h-0 border-l-14 border-r-14 border-t-28 border-l-transparent border-r-transparent border-t-yellow-400" />
-          </div>
+      <div className="relative w-full max-w-136 aspect-square flex items-center justify-center group">
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full z-30 pointer-events-none"
+          style={{ marginTop: "0px" }}
+        >
+          <svg width="40" height="30" viewBox="0 0 40 30">
+            <polygon
+              points="20,30 5,0 35,0"
+              fill="#F59E0B"
+              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))" }}
+            />
+          </svg>
         </div>
 
-        {/* Rotating SVG Wheel with Text */}
         <svg
           width="100%"
           height="100%"
@@ -128,7 +132,6 @@ export function SpinningWheel({
             maxHeight: "546px",
           }}
         >
-          {/* Draw each segment */}
           {prizes.map((prize, index) => {
             const startAngle = index * segmentAngle;
             const endAngle = (index + 1) * segmentAngle;
@@ -140,7 +143,6 @@ export function SpinningWheel({
               endAngle,
             );
 
-            // Calculate text position and rotation
             const midAngle = startAngle + segmentAngle / 2;
             const textRadius = radius * 0.62;
             const textPos = polarToCartesian(
@@ -150,7 +152,6 @@ export function SpinningWheel({
               midAngle,
             );
 
-            // Split long text into multiple lines
             const words = prize.label.split(" ");
             const lines: string[] = [];
 
@@ -160,7 +161,6 @@ export function SpinningWheel({
               lines.push(words[0]);
               lines.push(words[1]);
             } else {
-              // For 3+ words, try to balance the lines
               const mid = Math.ceil(words.length / 2);
               lines.push(words.slice(0, mid).join(" "));
               lines.push(words.slice(mid).join(" "));
@@ -168,7 +168,6 @@ export function SpinningWheel({
 
             return (
               <g key={prize.id}>
-                {/* Segment path */}
                 <path
                   d={pathData}
                   fill={prize.color}
@@ -176,7 +175,6 @@ export function SpinningWheel({
                   strokeWidth="3"
                 />
 
-                {/* Text rotated with segment - multi-line support */}
                 <text
                   x={textPos.x}
                   y={textPos.y}
@@ -205,7 +203,6 @@ export function SpinningWheel({
             );
           })}
 
-          {/* Segment dividers */}
           {prizes.map((_, index) => {
             const angle = index * segmentAngle;
             const innerPoint = polarToCartesian(
@@ -235,7 +232,6 @@ export function SpinningWheel({
             );
           })}
 
-          {/* Outer border */}
           <circle
             cx={centerX}
             cy={centerY}
@@ -244,101 +240,110 @@ export function SpinningWheel({
             stroke="rgba(255, 255, 255, 0.7)"
             strokeWidth="4"
           />
-
-          {/* Center circle with gradient */}
-          <defs>
-            <linearGradient
-              id="centerGradient"
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="100%"
-            >
-              <stop offset="0%" stopColor="#FCD34D" />
-              <stop offset="50%" stopColor="#FBBF24" />
-              <stop offset="100%" stopColor="#F59E0B" />
-            </linearGradient>
-            <radialGradient id="centerShadow">
-              <stop offset="0%" stopColor="rgba(0,0,0,0)" />
-              <stop offset="100%" stopColor="rgba(0,0,0,0.3)" />
-            </radialGradient>
-          </defs>
-
-          {/* Outer center ring */}
-          <circle
-            cx={centerX}
-            cy={centerY}
-            r={radius * 0.24}
-            fill="white"
-            stroke="none"
-          />
-
-          {/* Inner center circle with gradient */}
-          <circle
-            cx={centerX}
-            cy={centerY}
-            r={radius * 0.22}
-            fill="url(#centerGradient)"
-            stroke="white"
-            strokeWidth="3"
-          />
-
-          {/* Center text - SPIN */}
-          <text
-            x={centerX}
-            y={centerY}
-            fontSize="36"
-            fontWeight="900"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            fill="white"
-            style={{
-              textShadow: "0 2px 10px rgba(0,0,0,0.4)",
-              letterSpacing: "2px",
-            }}
-          >
-            SPIN
-          </text>
         </svg>
-      </div>
 
-      {/* Spin Button */}
-      <button
-        onClick={handleSpin}
-        disabled={isSpinning || disabled}
-        title={disabled && !isSpinning ? t.wheel.emailRequired : undefined}
-        className="px-8 py-4 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white rounded-full font-bold text-lg shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:from-gray-400 disabled:to-gray-500 disabled:hover:from-gray-400 disabled:hover:to-gray-500 transform hover:scale-105 active:scale-95"
-        aria-busy={isSpinning}
-        aria-label={isSpinning ? t.wheel.spinning : t.hero.spinButton}
-      >
-        {isSpinning ? (
-          <span className="flex items-center gap-2">
-            <svg
-              className="animate-spin h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <defs>
+              <linearGradient
+                id="centerGradientFixed"
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <stop offset="0%" stopColor="#FFFFFF" />
+                <stop offset="50%" stopColor="#F9FAFB" />
+                <stop offset="100%" stopColor="#F3F4F6" />
+              </linearGradient>
+              <filter id="dropShadowFixed">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+                <feOffset dx="0" dy="4" result="offsetblur" />
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.3" />
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <circle
+              cx="60"
+              cy="60"
+              r="58"
+              fill="#E5E7EB"
+              stroke="none"
+              onClick={handleSpin}
+              style={{
+                cursor: isSpinning || disabled ? "not-allowed" : "pointer",
+                opacity: isSpinning ? 0.5 : 1,
+              }}
+              className={`transition-all duration-300 ${!isSpinning && !disabled ? "animate-pulse" : ""}`}
+              filter="url(#dropShadowFixed)"
+            />
+
+            <circle
+              cx="60"
+              cy="60"
+              r="53"
+              fill="url(#centerGradientFixed)"
+              stroke="none"
+              onClick={handleSpin}
+              style={{
+                cursor: isSpinning || disabled ? "not-allowed" : "pointer",
+                filter: isSpinning
+                  ? "brightness(0.95)"
+                  : "drop-shadow(0 6px 12px rgba(0,0,0,0.2))",
+              }}
+              className="transition-all duration-300"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            {t.wheel.spinning}
-          </span>
-        ) : (
-          t.hero.spinButton
-        )}
-      </button>
+              {!isSpinning && !disabled && (
+                <animate
+                  attributeName="r"
+                  values="53;55;53"
+                  dur="1.5s"
+                  repeatCount="indefinite"
+                />
+              )}
+            </circle>
+
+            <text
+              x="60"
+              y="60"
+              fontSize="36"
+              fontWeight="900"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill="#F59E0B"
+              onClick={handleSpin}
+              style={{
+                textShadow: "0 2px 8px rgba(245, 158, 11, 0.4)",
+                letterSpacing: "3px",
+                cursor: isSpinning || disabled ? "not-allowed" : "pointer",
+                userSelect: "none",
+                opacity: isSpinning ? 0.7 : 1,
+              }}
+              className={`transition-all duration-300 ${!isSpinning && !disabled ? "animate-pulse" : ""}`}
+            >
+              {isSpinning ? (
+                <tspan>
+                  <animate
+                    attributeName="opacity"
+                    values="1;0.3;1"
+                    dur="0.8s"
+                    repeatCount="indefinite"
+                  />
+                  ...
+                </tspan>
+              ) : (
+                "SPIN"
+              )}
+            </text>
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }

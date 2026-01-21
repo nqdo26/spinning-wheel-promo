@@ -16,22 +16,14 @@ type ResultModalProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   prize: Prize | null;
-  email?: string;
 };
 
-export function ResultModal({
-  open,
-  onOpenChange,
-  prize,
-  email,
-}: ResultModalProps) {
+export function ResultModal({ open, onOpenChange, prize }: ResultModalProps) {
   const { t } = useLanguage();
   const [copied, setCopied] = React.useState(false);
 
-  // Determine if this is a "no luck" prize
   const isNoLuck = prize?.id === "no-luck";
 
-  // Generate a simulated promo code
   const promoCode = React.useMemo(() => {
     if (!prize || isNoLuck) return null;
     const random = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -70,7 +62,6 @@ export function ResultModal({
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Prize Display */}
           <div className="flex flex-col items-center gap-4">
             <div
               className="w-24 h-24 rounded-full flex items-center justify-center shadow-lg"
@@ -94,7 +85,6 @@ export function ResultModal({
             </div>
           </div>
 
-          {/* Promo Code Section - Only for winning prizes */}
           {!isNoLuck && promoCode && (
             <div className="space-y-3">
               <div className="bg-muted/50 rounded-lg p-4 border border-border">
@@ -117,16 +107,6 @@ export function ResultModal({
             </div>
           )}
 
-          {/* Email Confirmation */}
-          {email && !isNoLuck && (
-            <p className="text-xs text-center text-muted-foreground">
-              📧 {t.result.message}
-              <br />
-              <span className="font-semibold">{email}</span>
-            </p>
-          )}
-
-          {/* Action Buttons */}
           <div className="space-y-2">
             <Button onClick={handleClose} className="w-full" size="lg">
               {isNoLuck ? t.wheel.tryAgain : t.result.shopNow}

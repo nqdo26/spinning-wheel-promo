@@ -19,7 +19,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = React.useState<Locale>("en");
   const [mounted, setMounted] = React.useState(false);
 
-  // Initialize locale from localStorage
   React.useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY) as Locale | null;
     if (stored && (stored === "en" || stored === "vi")) {
@@ -42,7 +41,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     [locale, setLocale],
   );
 
-  // Prevent flash of wrong language
   if (!mounted) {
     return null;
   }

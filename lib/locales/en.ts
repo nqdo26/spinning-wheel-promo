@@ -1,29 +1,27 @@
 export const en = {
-  // Common
   common: {
     loading: "Loading...",
     error: "Something went wrong",
     close: "Close",
   },
 
-  // Navigation
   nav: {
     home: "Home",
     language: "Language",
   },
 
-  // Hero Section
   hero: {
     title: "Spin the Wheel & Win!",
     subtitle:
       "Enter your email for a chance to win exclusive prizes and discounts",
     emailPlaceholder: "Enter your email address",
     spinButton: "Spin the Wheel",
+    showWheel: "Spin Now",
+    backToHome: "Back to Home",
     termsText: "By participating, you agree to our",
     termsLink: "Terms & Conditions",
   },
 
-  // Spinning Wheel
   wheel: {
     spinning: "Spinning...",
     congratulations: "Congratulations!",
@@ -34,7 +32,6 @@ export const en = {
     invalidEmail: "Please enter a valid email address",
   },
 
-  // Prizes
   prizes: {
     discount10: "10% Off",
     discount20: "20% Off",
@@ -46,7 +43,6 @@ export const en = {
     mystery: "Mystery Prize",
   },
 
-  // Result Modal
   result: {
     title: "🎉 Congratulations!",
     message: "Your prize has been sent to your email!",
@@ -58,7 +54,6 @@ export const en = {
     noLuckMessage: "Don't worry! Check your email for other exclusive offers.",
   },
 
-  // Footer
   footer: {
     rights: "All rights reserved",
     privacy: "Privacy Policy",
@@ -66,7 +61,6 @@ export const en = {
     contact: "Contact Us",
   },
 
-  // Validation
   validation: {
     emailRequired: "Email address is required",
     emailInvalid: "Please enter a valid email address",

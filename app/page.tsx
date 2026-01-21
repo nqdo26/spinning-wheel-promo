@@ -9,58 +9,58 @@ import { useLanguage } from "@/lib/language-context";
 
 export default function Home() {
   const { t } = useLanguage();
-  const [email, setEmail] = useState("");
   const [hasSpun, setHasSpun] = useState(false);
   const [wonPrize, setWonPrize] = useState<Prize | null>(null);
   const [showResultModal, setShowResultModal] = useState(false);
+  const [showWheel, setShowWheel] = useState(false);
 
   const prizes: Prize[] = [
     {
       id: "discount-10",
       label: t.prizes.discount10,
-      color: "#EF4444", // Red
+      color: "#EF4444",
       textColor: "#FFFFFF",
     },
     {
       id: "free-shipping",
       label: t.prizes.freeShipping,
-      color: "#F59E0B", // Amber
+      color: "#F59E0B",
       textColor: "#FFFFFF",
     },
     {
       id: "discount-20",
       label: t.prizes.discount20,
-      color: "#10B981", // Emerald
+      color: "#10B981",
       textColor: "#FFFFFF",
     },
     {
       id: "gift-50",
       label: t.prizes.giftCard50,
-      color: "#3B82F6", // Blue
+      color: "#3B82F6",
       textColor: "#FFFFFF",
     },
     {
       id: "discount-30",
       label: t.prizes.discount30,
-      color: "#8B5CF6", // Violet
+      color: "#8B5CF6",
       textColor: "#FFFFFF",
     },
     {
       id: "mystery",
       label: t.prizes.mystery,
-      color: "#EC4899", // Pink
+      color: "#EC4899",
       textColor: "#FFFFFF",
     },
     {
       id: "no-luck",
       label: t.prizes.noLuck,
-      color: "#6B7280", // Gray
+      color: "#6B7280",
       textColor: "#FFFFFF",
     },
     {
       id: "gift-100",
       label: t.prizes.giftCard100,
-      color: "#14B8A6", // Teal
+      color: "#14B8A6",
       textColor: "#FFFFFF",
     },
   ];
@@ -74,15 +74,10 @@ export default function Home() {
   const handleModalClose = (open: boolean) => {
     setShowResultModal(open);
     if (!open) {
-      // Reset for another spin
       setHasSpun(false);
       setWonPrize(null);
     }
   };
-
-  // Simple email validation
-  const isEmailValid =
-    email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,68 +88,49 @@ export default function Home() {
 
       <main className="flex min-h-screen items-center justify-center p-8 pt-20">
         <div className="max-w-4xl w-full space-y-12">
-          {/* Hero Section */}
           <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold">{t.hero.title}</h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t.hero.subtitle}
-            </p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-20">
+              {t.hero.title}
+            </h1>
           </div>
 
-          {/* Email Input */}
-          {!hasSpun && (
-            <div className="max-w-md mx-auto space-y-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onBlur={(e) => setEmail(e.target.value.trim())}
-                placeholder={t.hero.emailPlaceholder}
-                className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
-                autoFocus
-                autoComplete="email"
-                aria-label="Email address"
-                aria-invalid={email.length > 0 && !isEmailValid}
-                aria-describedby={
-                  email && !isEmailValid ? "email-error" : undefined
-                }
-              />
-              {email && !isEmailValid && (
-                <p
-                  id="email-error"
-                  className="text-sm text-destructive"
-                  role="alert"
-                >
-                  {t.wheel.invalidEmail}
-                </p>
-              )}
+          {!showWheel && !hasSpun && (
+            <div className="max-w-md mx-auto">
+              <button
+                onClick={() => setShowWheel(true)}
+                className="w-full px-8 py-4 bg-linear-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-white rounded-lg font-bold text-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 active:scale-95"
+              >
+                {t.hero.showWheel || "Show Spinning Wheel"}
+              </button>
             </div>
           )}
 
-          {/* Spinning Wheel */}
-          <div className="flex justify-center">
-            <SpinningWheel
-              prizes={prizes}
-              onSpinComplete={handleSpinComplete}
-              disabled={!isEmailValid}
-            />
-          </div>
+          {showWheel && (
+            <div className="space-y-6">
+              <div className="flex justify-center">
+                <SpinningWheel
+                  prizes={prizes}
+                  onSpinComplete={handleSpinComplete}
+                  disabled={false}
+                />
+              </div>
 
-          {/* Result Modal */}
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setShowWheel(false)}
+                  className="px-6 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-lg font-medium transition-all"
+                >
+                  {t.hero.backToHome || "Back to Home"}
+                </button>
+              </div>
+            </div>
+          )}
+
           <ResultModal
             open={showResultModal}
             onOpenChange={handleModalClose}
             prize={wonPrize}
-            email={email}
           />
-
-          {/* Terms */}
-          <p className="text-sm text-muted-foreground text-center">
-            {t.hero.termsText}{" "}
-            <a href="#" className="underline hover:text-foreground">
-              {t.hero.termsLink}
-            </a>
-          </p>
         </div>
       </main>
     </div>
